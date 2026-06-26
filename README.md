@@ -1,4 +1,3 @@
-# REP
 # Bulk Scanner — Domains, Hashes & IPs
 
 A browser-based SOC automation tool that performs bulk reputation checks for **IPs**, **file hashes**, **domains**, and **URLs** using multiple threat intelligence sources through a secure Cloudflare Worker proxy. Designed for SOC analysts, threat hunters, DFIR teams, and incident responders who need fast IOC triage without exposing API keys to the browser. 
