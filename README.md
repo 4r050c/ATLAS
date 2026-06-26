@@ -69,19 +69,16 @@ screenshots/
 ```
 ├── ip-scanner
 
-<img width="812" height="602" alt="image" src="https://github.com/user-attachments/assets/44f77cd3-5fa9-422e-bda2-c26ca5240fc2" />
+<img width="914" height="802" alt="image" src="https://github.com/user-attachments/assets/cbcab9cc-f49f-49e4-a62d-99c9f116d8e6" />
+
 
 ├── hash-scanner.png
 
-<img width="781" height="804" alt="image" src="https://github.com/user-attachments/assets/e16bc781-0759-42cc-b13f-498b559b5fd0" />
+<img width="707" height="787" alt="image" src="https://github.com/user-attachments/assets/fbce0b76-70ff-4a95-a131-4c7c04e6728d" />
 
-├── domain-scanner.png
 
-<img width="787" height="355" alt="image" src="https://github.com/user-attachments/assets/1cb25599-0f89-4bbd-9dc3-8ddff02acac0" />
-
-└── vt-widget.png
-
-<img width="1483" height="797" alt="image" src="https://github.com/user-attachments/assets/82ccc37e-37f2-4d28-8633-5ae9af9b0f56" />
+├── domain-scanner + vt-widge
+<img width="1540" height="761" alt="image" src="https://github.com/user-attachments/assets/f1327629-969b-4a9d-bff3-6520a35ce7a2" />
 
 ```
 ---
