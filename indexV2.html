@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>ATLAS · Automated Threat Lookup & Aggregation System</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
     <style>
         /* ── Reset & Variables ── */
         *,
@@ -1063,7 +1064,7 @@
 
             function escapeHtml(s) {
                 if (s === null || s === undefined) return '';
-                return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } [
+                return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[
                 ch]));
             }
 
@@ -1432,7 +1433,8 @@
                 if (!s) return s;
                 let t = String(s).trim();
                 if (t.startsWith('<') && t.endsWith('>')) t = t.slice(1, -1).trim();
-                if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/\/.test(t)) {
+                // Fixed regex: proper closing slash and two slashes for URL scheme
+                if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//.test(t)) {
                     return t.replace(/^[\s"'<]+|[\s"'>]+$/g, '');
                 }
                 if (t.indexOf('/') !== -1) {
@@ -1447,7 +1449,8 @@
 
             function isLikelyUrl(s) {
                 if (!s) return false;
-                if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/\/.test(s)) return true;
+                // Fixed regex: proper closing slash and two slashes
+                if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//.test(s)) return true;
                 if (/\/.+/.test(s)) return true;
                 if (/\?.+=/.test(s)) return true;
                 return false;
@@ -1456,7 +1459,7 @@
             function extractHost(s) {
                 try {
                     let parsed;
-                    if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\/\/.test(s)) parsed = new URL(s);
+                    if (/^[a-zA-Z][a-zA-Z0-9+\-.]*:\/\//.test(s)) parsed = new URL(s);
                     else parsed = new URL('http://' + s);
                     let host = parsed.hostname || null;
                     if (host) host = cleanHost(host);
