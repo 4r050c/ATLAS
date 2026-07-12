@@ -593,95 +593,84 @@
             color: var(--text-muted);
             font-size: 0.85rem;
         }
-        .result-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+
+        /* ─── IP result blocks (simpler "old" style) ─── */
+        .ip-result-block {
             padding: 10px 14px;
             border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.82rem;
+            line-height: 1.5;
             transition: background var(--transition);
-            flex-wrap: wrap;
-        }
-        .result-item:last-child {
-            border-bottom: none;
-        }
-        .result-item:hover {
-            background: rgba(255, 255, 255, 0.015);
-        }
-        .result-item .icon {
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        .result-item .value {
-            flex: 1;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            word-break: break-all;
-            min-width: 80px;
-        }
-        .result-item .meta {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            flex-shrink: 0;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
-        .result-item .verdict {
+        .ip-result-block:last-child {
+            border-bottom: none;
+        }
+        .ip-result-block:hover {
+            background: rgba(255, 255, 255, 0.015);
+        }
+        .ip-result-block .verdict-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
-            padding: 1px 12px;
+            padding: 2px 10px;
             border-radius: 20px;
             text-transform: uppercase;
             letter-spacing: 0.04em;
             flex-shrink: 0;
             border: 1px solid transparent;
+            background: rgba(148, 163, 184, 0.06);
+            color: var(--text-muted);
+            border-color: var(--border-subtle);
         }
-        .verdict.malicious {
+        .ip-result-block .verdict-badge.safe {
+            background: rgba(110, 231, 183, 0.08);
+            color: var(--green-safe);
+            border-color: rgba(110, 231, 183, 0.1);
+        }
+        .ip-result-block .verdict-badge.malicious {
             background: rgba(248, 113, 113, 0.12);
             color: var(--red-bad);
             border-color: rgba(248, 113, 113, 0.15);
         }
-        .verdict.highly-malicious {
+        .ip-result-block .verdict-badge.highly-malicious {
             background: rgba(248, 113, 113, 0.22);
             color: #fca5a5;
             border-color: rgba(248, 113, 113, 0.25);
             box-shadow: 0 0 20px rgba(248, 113, 113, 0.04);
         }
-        .verdict.safe {
-            background: rgba(110, 231, 183, 0.1);
-            color: var(--green-safe);
-            border-color: rgba(110, 231, 183, 0.12);
-        }
-        .verdict.suspicious {
-            background: rgba(251, 191, 36, 0.1);
+        .ip-result-block .verdict-badge.suspicious {
+            background: rgba(251, 191, 36, 0.08);
             color: var(--yellow-warn);
-            border-color: rgba(251, 191, 36, 0.12);
+            border-color: rgba(251, 191, 36, 0.1);
         }
-        .verdict.not-found {
+        .ip-result-block .verdict-badge.error {
             background: rgba(148, 163, 184, 0.06);
             color: var(--text-muted);
             border-color: var(--border-subtle);
         }
-        .result-item .confidence-bar {
-            width: 80px;
-            height: 4px;
-            background: var(--border-subtle);
-            border-radius: 4px;
-            overflow: hidden;
+        .ip-result-block .ip-addr {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
             flex-shrink: 0;
         }
-        .result-item .confidence-bar .fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.6s ease;
+        .ip-result-block .ip-desc {
+            color: var(--text-secondary);
+            flex: 1;
+            min-width: 120px;
+            font-size: 0.78rem;
         }
-        .result-item .expand-btn {
+        .ip-result-block .ip-flag {
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .ip-result-block .ip-detail-toggle {
             background: transparent;
             border: none;
             color: var(--text-muted);
@@ -692,41 +681,35 @@
             transition: all var(--transition);
             font-family: var(--font);
         }
-        .result-item .expand-btn:hover {
+        .ip-result-block .ip-detail-toggle:hover {
             color: var(--text-primary);
             background: var(--bg-card);
         }
-        .result-item .flag {
-            font-size: 1rem;
-            flex-shrink: 0;
-        }
-
-        /* ─── Expandable Details ─── */
-        .result-details {
+        .ip-result-block .ip-details {
+            width: 100%;
             display: none;
-            padding: 10px 14px 14px 48px;
-            background: var(--bg-primary);
-            border-top: 1px solid var(--border-subtle);
-            font-size: 0.78rem;
-            color: var(--text-secondary);
+            padding: 8px 8px 4px 28px;
+            font-size: 0.72rem;
+            color: var(--text-muted);
             line-height: 1.8;
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 6px;
         }
-        .result-details.open {
+        .ip-result-block .ip-details.open {
             display: block;
         }
-        .result-details .row {
+        .ip-result-block .ip-details .row {
             display: grid;
-            grid-template-columns: 100px 1fr;
-            gap: 4px 12px;
+            grid-template-columns: 90px 1fr;
+            gap: 2px 12px;
         }
-        .result-details .row .k {
+        .ip-result-block .ip-details .row .k {
             color: var(--text-muted);
-            font-weight: 450;
         }
-        .result-details .divider {
+        .ip-result-block .ip-details .divider {
             border: none;
             border-top: 1px solid var(--border-subtle);
-            margin: 6px 0;
+            margin: 4px 0;
         }
 
         /* ─── Hash Table ─── */
@@ -860,6 +843,39 @@
             display: flex;
             gap: 6px;
             flex-shrink: 0;
+        }
+        .domain-result .verdict {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 1px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+            border: 1px solid transparent;
+        }
+        .domain-result .verdict.malicious {
+            background: rgba(248, 113, 113, 0.12);
+            color: var(--red-bad);
+            border-color: rgba(248, 113, 113, 0.15);
+        }
+        .domain-result .verdict.safe {
+            background: rgba(110, 231, 183, 0.08);
+            color: var(--green-safe);
+            border-color: rgba(110, 231, 183, 0.1);
+        }
+        .domain-result .verdict.suspicious {
+            background: rgba(251, 191, 36, 0.08);
+            color: var(--yellow-warn);
+            border-color: rgba(251, 191, 36, 0.1);
+        }
+        .domain-result .verdict.not-found {
+            background: rgba(148, 163, 184, 0.06);
+            color: var(--text-muted);
+            border-color: var(--border-subtle);
         }
 
         /* ─── Summary Bar ─── */
@@ -1135,51 +1151,41 @@
             color: var(--accent-cyan);
         }
 
-        .scroll-tabs {
-            display: flex;
-            gap: 4px;
-            overflow-x: auto;
-            padding-bottom: 4px;
-            margin-bottom: 8px;
-        }
-        .scroll-tabs .tab {
-            padding: 3px 14px;
-            border-radius: 16px;
-            font-size: 0.65rem;
-            font-weight: 500;
-            border: 1px solid var(--border-subtle);
-            background: transparent;
+        /* progress indicator for multi-scan */
+        .scan-progress {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
             color: var(--text-muted);
-            cursor: pointer;
-            white-space: nowrap;
-            font-family: var(--font);
-            transition: all var(--transition);
         }
-        .scroll-tabs .tab:hover {
-            border-color: var(--border-hover);
-            color: var(--text-primary);
+        .scan-progress .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green-safe);
+            animation: pulse-dot 1.2s ease-in-out infinite;
         }
-        .scroll-tabs .tab.active {
-            background: var(--accent-blue);
-            color: #fff;
-            border-color: var(--accent-blue);
+        .scan-progress .dot.busy {
+            background: var(--yellow-warn);
+        }
+        .scan-progress .dot.done {
+            background: var(--green-safe);
+            animation: none;
+        }
+        .scan-progress .dot.error {
+            background: var(--red-bad);
+            animation: none;
         }
 
-        /* result-item safe/good styling */
-        .result-item.safe {
-            border-left: 2px solid var(--green-safe);
-        }
-        .result-item.malicious {
-            border-left: 2px solid var(--red-bad);
-        }
-        .result-item.highly-malicious {
-            border-left: 2px solid #ff4444;
-        }
-        .result-item.suspicious {
-            border-left: 2px solid var(--yellow-warn);
-        }
-        .result-item.error {
-            border-left: 2px solid var(--text-muted);
+        /* non-copyable emoji */
+        .noncopy {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -1286,12 +1292,13 @@
                         <h2>🚀 Quick Scan</h2>
                     </div>
                     <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:10px;">
-                        Paste IPs, hashes, or domains — we'll auto-detect and scan.
+                        Paste IPs, hashes, domains, or URLs — we'll auto-detect and scan <strong>all</strong> types.
                     </p>
                     <textarea id="quickInput" rows="2" placeholder="Paste IPs, hashes, domains, or URLs…" style="min-height:60px;"></textarea>
                     <div class="input-group" style="margin-top:8px;">
-                        <button class="btn btn-primary" id="quickScanBtn">🔍 Auto-Scan</button>
+                        <button class="btn btn-primary" id="quickScanBtn">🔍 Auto-Scan All</button>
                         <button class="btn btn-outline" id="quickClearBtn">Clear</button>
+                        <span id="quickProgress" class="scan-progress hidden"><span class="dot busy"></span> Scanning…</span>
                     </div>
                 </div>
                 <div class="card" style="margin-bottom:0;">
@@ -1351,7 +1358,7 @@
                         <textarea id="erroredIPs" rows="2" readonly placeholder="None"></textarea>
                     </div>
                 </div>
-                <div class="results-container" id="ipResultsContainer" style="max-height:300px;">
+                <div class="results-container" id="ipResultsContainer" style="max-height:360px;">
                     <div class="empty">No IPs scanned yet</div>
                 </div>
                 <div class="summary-bar hidden" id="ipSummary">
@@ -1483,6 +1490,7 @@
                 hashExpanded: false,
                 currentTab: 'dashboard',
                 proxyBase: document.getElementById('proxyBase').value.trim(),
+                isScanning: false,
             };
 
             /* ─── DOM refs ─── */
@@ -1628,38 +1636,124 @@
             });
             overlay.addEventListener('click', closeSidebar);
 
-            /* ─── Quick Scan ─── */
-            $('quickScanBtn').addEventListener('click', () => {
+            /* ─── Quick Scan — handles ALL types ─── */
+            $('quickScanBtn').addEventListener('click', async () => {
+                if (state.isScanning) {
+                    setStatus('Already scanning, please wait…', true);
+                    return;
+                }
                 const raw = $('quickInput').value.trim();
                 if (!raw) { setStatus('Enter something to scan', true); return; }
                 const lines = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
                 const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
                 const hashRegex = /^[a-fA-F0-9]{32}$|^[a-fA-F0-9]{40}$|^[a-fA-F0-9]{64}$/;
-                let ipCount = 0,
-                    hashCount = 0,
-                    domainCount = 0;
-                lines.forEach(l => {
-                    if (ipRegex.test(l)) ipCount++;
-                    else if (hashRegex.test(l)) hashCount++;
-                    else domainCount++;
-                });
-                if (ipCount > 0) {
-                    $('ipTextArea').value = lines.filter(l => ipRegex.test(l)).join('\n');
-                    switchTab('ip');
-                    setTimeout(() => $('scanIPsBtn').click(), 200);
-                } else if (hashCount > 0) {
-                    $('hashInput').value = lines.filter(l => hashRegex.test(l)).join('\n');
-                    switchTab('hash');
-                    setTimeout(() => $('scanHashesBtn').click(), 200);
-                } else if (domainCount > 0) {
-                    $('domainInput').value = lines.join('\n');
-                    switchTab('domain');
-                    setTimeout(() => $('scanDomainsBtn').click(), 200);
-                } else {
-                    setStatus('Could not detect IOC type', true);
+
+                const ips = lines.filter(l => ipRegex.test(l));
+                const hashes = lines.filter(l => hashRegex.test(l));
+                const domains = lines.filter(l => !ipRegex.test(l) && !hashRegex.test(l));
+
+                if (ips.length === 0 && hashes.length === 0 && domains.length === 0) {
+                    setStatus('No valid IOCs detected.', true);
+                    return;
+                }
+
+                state.isScanning = true;
+                const progress = $('quickProgress');
+                progress.classList.remove('hidden');
+                const dot = progress.querySelector('.dot');
+                dot.className = 'dot busy';
+                progress.innerHTML = `<span class="dot busy"></span> Scanning ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains…`;
+
+                setStatus(`Quick scan: ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains`);
+
+                // Store original textarea values to restore after
+                const origIP = $('ipTextArea').value;
+                const origHash = $('hashInput').value;
+                const origDomain = $('domainInput').value;
+
+                try {
+                    // 1. Scan IPs
+                    if (ips.length) {
+                        $('ipTextArea').value = ips.join('\n');
+                        // Trigger IP scan and wait for it to finish
+                        await new Promise((resolve) => {
+                            const btn = $('scanIPsBtn');
+                            const statusEl = $('ipScanStatus');
+                            const origStatus = statusEl.textContent;
+                            btn.click();
+                            const checkDone = setInterval(() => {
+                                const txt = statusEl.textContent;
+                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
+                                    clearInterval(checkDone);
+                                    resolve();
+                                }
+                            }, 400);
+                            // safety timeout after 30s
+                            setTimeout(() => { clearInterval(checkDone);
+                                resolve(); }, 30000);
+                        });
+                        await sleep(500);
+                    }
+
+                    // 2. Scan Hashes
+                    if (hashes.length) {
+                        $('hashInput').value = hashes.join('\n');
+                        await new Promise((resolve) => {
+                            const btn = $('scanHashesBtn');
+                            const statusEl = $('hashScanStatus');
+                            btn.click();
+                            const checkDone = setInterval(() => {
+                                const txt = statusEl.textContent;
+                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
+                                    clearInterval(checkDone);
+                                    resolve();
+                                }
+                            }, 400);
+                            setTimeout(() => { clearInterval(checkDone);
+                                resolve(); }, 30000);
+                        });
+                        await sleep(500);
+                    }
+
+                    // 3. Scan Domains
+                    if (domains.length) {
+                        $('domainInput').value = domains.join('\n');
+                        await new Promise((resolve) => {
+                            const btn = $('scanDomainsBtn');
+                            const statusEl = $('domainScanStatus');
+                            btn.click();
+                            const checkDone = setInterval(() => {
+                                const txt = statusEl.textContent;
+                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
+                                    clearInterval(checkDone);
+                                    resolve();
+                                }
+                            }, 400);
+                            setTimeout(() => { clearInterval(checkDone);
+                                resolve(); }, 30000);
+                        });
+                    }
+
+                    progress.innerHTML = `<span class="dot done"></span> ✅ Complete — ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains scanned`;
+                    setStatus('Quick scan complete.');
+
+                } catch (err) {
+                    progress.innerHTML = `<span class="dot error"></span> ⚠ Error: ${err.message}`;
+                    setStatus('Quick scan error: ' + err.message, true);
+                } finally {
+                    state.isScanning = false;
+                    // Restore original textareas (optional)
+                    // $('ipTextArea').value = origIP;
+                    // $('hashInput').value = origHash;
+                    // $('domainInput').value = origDomain;
+                    // keep the populated values so user can see what was scanned
                 }
             });
-            $('quickClearBtn').addEventListener('click', () => { $('quickInput').value = ''; });
+
+            $('quickClearBtn').addEventListener('click', () => {
+                $('quickInput').value = '';
+                $('quickProgress').classList.add('hidden');
+            });
 
             /* ─── Worker Test ─── */
             async function testWorker() {
@@ -1692,7 +1786,7 @@
             $('settingsTestWorker').addEventListener('click', testWorker);
             setTimeout(testWorker, 600);
 
-            /* ─── IP Scanner ─── */
+            /* ─── IP Scanner — simplified "old style" results ─── */
             const ipText = $('ipTextArea');
             const privateIPs = $('privateIPs');
             const erroredIPs = $('erroredIPs');
@@ -1729,63 +1823,70 @@
                     safe = 0,
                     high = 0,
                     sus = 0;
+
                 state.ipResults.forEach((r, idx) => {
-                    const div = document.createElement('div');
-                    const cls = r.verdict === 'highly-malicious' ? 'highly-malicious' :
-                        r.verdict === 'malicious' ? 'malicious' :
-                        r.verdict === 'suspicious' ? 'suspicious' :
-                        r.verdict === 'safe' ? 'safe' : 'error';
-                    div.className = `result-item ${cls} fade-in`;
-                    div.dataset.idx = idx;
-                    div.dataset.cat = cls;
+                    const block = document.createElement('div');
+                    block.className = 'ip-result-block fade-in';
+                    block.dataset.idx = idx;
+                    block.dataset.cat = r.verdict || 'error';
 
                     const flag = r.countryCode ? toFlagEmoji(r.countryCode) : '';
-                    let vClass = 'safe',
-                        vLabel = 'Safe',
+
+                    let badgeClass = 'safe',
+                        badgeLabel = 'Safe',
                         icon = '🟢';
-                    if (r.verdict === 'highly-malicious') { vClass = 'highly-malicious';
-                        vLabel = '⚠ High';
+                    if (r.verdict === 'highly-malicious') { badgeClass = 'highly-malicious';
+                        badgeLabel = '⚠ High';
                         icon = '🔴'; }
-                    if (r.verdict === 'malicious') { vClass = 'malicious';
-                        vLabel = 'Malicious';
+                    if (r.verdict === 'malicious') { badgeClass = 'malicious';
+                        badgeLabel = 'Malicious';
                         icon = '🟡'; }
-                    if (r.verdict === 'suspicious') { vClass = 'suspicious';
-                        vLabel = 'Suspicious';
+                    if (r.verdict === 'suspicious') { badgeClass = 'suspicious';
+                        badgeLabel = 'Suspicious';
                         icon = '🟠'; }
-                    if (r.verdict === 'safe') { vClass = 'safe';
-                        vLabel = 'Safe';
+                    if (r.verdict === 'safe') { badgeClass = 'safe';
+                        badgeLabel = 'Safe';
                         icon = '🟢'; }
-                    if (r.verdict === 'error') { vClass = 'not-found';
-                        vLabel = 'Error';
+                    if (r.verdict === 'error') { badgeClass = 'error';
+                        badgeLabel = 'Error';
                         icon = '⚠️'; }
 
-                    const confidence = r.raw?.abuseConfidenceScore || 0;
-                    const barColor = confidence >= 80 ? 'var(--red-bad)' : confidence >= 5 ? 'var(--yellow-warn)' :
-                        'var(--green-safe)';
+                    const score = r.raw?.abuseConfidenceScore || 0;
+                    const reports = r.totalReports || 0;
+                    const isp = r.isp || '';
 
-                    div.innerHTML = `
-                        <span class="icon">${icon}</span>
-                        <span class="value">${escapeHtml(r.ip)}</span>
-                        <span class="meta">${r.isp ? escapeHtml(r.isp) : ''} ${r.totalReports ? r.totalReports + ' reports' : ''}</span>
-                        <span class="flag">${flag}</span>
-                        <div class="confidence-bar"><div class="fill" style="width:${Math.min(100, confidence)}%;background:${barColor};"></div></div>
-                        <span class="verdict ${vClass}">${vLabel}</span>
-                        <button class="expand-btn" onclick="toggleIPDetail(${idx})">▾</button>
-                    `;
-                    ipResultsContainer.appendChild(div);
+                    let desc = '';
+                    if (r.verdict === 'highly-malicious') {
+                        desc =
+                            `Highly malicious (Confidence: ${score}%, Reports: ${reports}, ISP: ${isp})`;
+                    } else if (r.verdict === 'malicious') {
+                        desc = `Malicious (Confidence: ${score}%, Reports: ${reports}, ISP: ${isp})`;
+                    } else if (r.verdict === 'suspicious') {
+                        desc = `Suspicious (Confidence: ${score}%, Reports: ${reports}, ISP: ${isp})`;
+                    } else if (r.verdict === 'safe') {
+                        desc = `Safe — ISP: ${isp || 'unknown'}`;
+                    } else {
+                        desc = 'Error retrieving data';
+                    }
 
-                    const details = document.createElement('div');
-                    details.className = 'result-details';
-                    details.id = 'ip-detail-' + idx;
-                    details.innerHTML = `
-                        <div class="row"><span class="k">Abuse Confidence</span> <span>${confidence}%</span></div>
-                        <div class="row"><span class="k">Total Reports</span> <span>${r.totalReports || 0}</span></div>
-                        <div class="row"><span class="k">ISP</span> <span>${escapeHtml(r.isp || '—')}</span></div>
-                        <div class="row"><span class="k">Country</span> <span>${escapeHtml(r.countryCode || '—')} ${flag}</span></div>
-                        <div class="row"><span class="k">Domain</span> <span>${escapeHtml(r.raw?.domain || '—')}</span></div>
-                        <div class="row"><span class="k">Usage Type</span> <span>${escapeHtml(r.raw?.usageType || '—')}</span></div>
+                    const detailId = 'ip-detail-' + idx;
+
+                    block.innerHTML = `
+                        <span class="ip-addr">${escapeHtml(r.ip)}</span>
+                        ${flag ? `<span class="ip-flag">${flag}</span>` : ''}
+                        <span class="ip-desc">${escapeHtml(desc)}</span>
+                        <span class="verdict-badge ${badgeClass}">${icon} ${badgeLabel}</span>
+                        <button class="ip-detail-toggle" onclick="toggleIPDetail(${idx})">▾</button>
+                        <div class="ip-details" id="${detailId}">
+                            <div class="row"><span class="k">Abuse Confidence</span> <span>${score}%</span></div>
+                            <div class="row"><span class="k">Total Reports</span> <span>${reports}</span></div>
+                            <div class="row"><span class="k">ISP</span> <span>${escapeHtml(isp || '—')}</span></div>
+                            <div class="row"><span class="k">Country</span> <span>${escapeHtml(r.countryCode || '—')} ${flag}</span></div>
+                            <div class="row"><span class="k">Domain</span> <span>${escapeHtml(r.raw?.domain || '—')}</span></div>
+                            <div class="row"><span class="k">Usage Type</span> <span>${escapeHtml(r.raw?.usageType || '—')}</span></div>
+                        </div>
                     `;
-                    ipResultsContainer.appendChild(details);
+                    ipResultsContainer.appendChild(block);
 
                     if (r.verdict === 'malicious') mal++;
                     else if (r.verdict === 'highly-malicious') high++;
@@ -1810,7 +1911,8 @@
                 const el = document.getElementById('ip-detail-' + idx);
                 if (!el) return;
                 el.classList.toggle('open');
-                const btn = document.querySelector(`.result-item[data-idx="${idx}"] .expand-btn`);
+                const block = el.closest('.ip-result-block');
+                const btn = block ? block.querySelector('.ip-detail-toggle') : null;
                 if (btn) btn.textContent = el.classList.contains('open') ? '▴' : '▾';
             };
 
@@ -1823,7 +1925,7 @@
                 pills.forEach(p => {
                     if (p.dataset.filter === mode) p.classList.add(map[mode] || 'active');
                 });
-                const items = ipResultsContainer.querySelectorAll('.result-item');
+                const items = ipResultsContainer.querySelectorAll('.ip-result-block');
                 items.forEach(el => {
                     const cat = el.dataset.cat || '';
                     if (mode === 'all') { el.style.display = 'flex'; return; }
@@ -1834,13 +1936,14 @@
                         el.style.display = cat === 'safe' ? 'flex' : 'none';
                     }
                 });
-                document.querySelectorAll('.result-details').forEach(d => {
-                    const parent = d.previousElementSibling;
+                document.querySelectorAll('.ip-details').forEach(d => {
+                    const parent = d.closest('.ip-result-block');
                     if (parent && parent.style.display === 'none') d.classList.remove('open');
                 });
             };
 
             $('scanIPsBtn').addEventListener('click', async () => {
+                if (state.isScanning) { setStatus('Already scanning…', true); return; }
                 const raw = ipText.value.trim();
                 if (!raw) { setStatus('Enter at least one IP', true); return; }
                 const ips = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
@@ -1851,6 +1954,7 @@
                 ipResultsContainer.innerHTML =
                     '<div style="padding:16px;text-align:center;"><span class="spinner"></span> Scanning...</div>';
                 setStatus(`Scanning ${ips.length} IPs...`);
+                state.isScanning = true;
                 let totalScanned = 0,
                     malCount = 0,
                     safeCount = 0,
@@ -1902,6 +2006,7 @@
                 setStatus(`IP scan complete: ${totalScanned} IPs`);
                 $('ipScanStatus').textContent = `✅ ${totalScanned} IPs`;
                 filterIP(ipFilterMode);
+                state.isScanning = false;
             });
 
             $('clearIPsBtn').addEventListener('click', () => {
@@ -1968,6 +2073,7 @@
             });
 
             $('scanHashesBtn').addEventListener('click', async () => {
+                if (state.isScanning) { setStatus('Already scanning…', true); return; }
                 state.proxyBase = proxyBaseInput.value.trim();
                 const raw = hashInput.value || '';
                 const found = raw.match(hashRegex) || [];
@@ -1981,6 +2087,7 @@
                 let malCount = 0,
                     safeCount = 0,
                     totalScanned = 0;
+                state.isScanning = true;
 
                 for (const h of hashes) {
                     const row = hashBody.insertRow();
@@ -2111,6 +2218,7 @@
                 addHistory({ type: 'Hash Scan', label: `Scanned ${totalScanned} hashes (${malCount} malicious)` });
                 setStatus(`Hash scan complete: ${totalScanned} hashes`);
                 $('hashScanStatus').textContent = `✅ ${totalScanned} hashes`;
+                state.isScanning = false;
             });
 
             /* ─── Domain / URL Scanner ─── */
@@ -2209,6 +2317,7 @@
             }
 
             $('scanDomainsBtn').addEventListener('click', () => {
+                if (state.isScanning) { setStatus('Already scanning…', true); return; }
                 const txt = domainInput.value.trim();
                 if (!txt) { setStatus('Enter at least one domain or URL', true); return; }
                 const lines = txt.split(/\r?\n/).map(d => d.trim()).filter(Boolean);
@@ -2221,6 +2330,8 @@
                 let totalScanned = 0,
                     malCount = 0,
                     susCount = 0;
+                state.isScanning = true;
+
                 (async () => {
                     for (const ln of Array.from(new Set(lines))) {
                         const norm = normalizeInput(ln);
@@ -2241,6 +2352,7 @@
                         label: `Scanned ${totalScanned} items (${malCount} malicious)` });
                     setStatus(`Domain/URL scan complete: ${totalScanned} items`);
                     $('domainScanStatus').textContent = `✅ ${totalScanned} items`;
+                    state.isScanning = false;
                 })();
             });
 
