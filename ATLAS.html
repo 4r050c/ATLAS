@@ -594,7 +594,7 @@
             font-size: 0.85rem;
         }
 
-        /* ─── IP result blocks (simpler "old" style) ─── */
+        /* ─── IP result blocks (old style) ─── */
         .ip-result-block {
             padding: 10px 14px;
             border-bottom: 1px solid var(--border-subtle);
@@ -1151,7 +1151,6 @@
             color: var(--accent-cyan);
         }
 
-        /* progress indicator for multi-scan */
         .scan-progress {
             display: inline-flex;
             align-items: center;
@@ -1161,8 +1160,8 @@
         }
         .scan-progress .dot {
             display: inline-block;
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--green-safe);
             animation: pulse-dot 1.2s ease-in-out infinite;
@@ -1178,8 +1177,6 @@
             background: var(--red-bad);
             animation: none;
         }
-
-        /* non-copyable emoji */
         .noncopy {
             user-select: none;
             -webkit-user-select: none;
@@ -1636,125 +1633,6 @@
             });
             overlay.addEventListener('click', closeSidebar);
 
-            /* ─── Quick Scan — handles ALL types ─── */
-            $('quickScanBtn').addEventListener('click', async () => {
-                if (state.isScanning) {
-                    setStatus('Already scanning, please wait…', true);
-                    return;
-                }
-                const raw = $('quickInput').value.trim();
-                if (!raw) { setStatus('Enter something to scan', true); return; }
-                const lines = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-                const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
-                const hashRegex = /^[a-fA-F0-9]{32}$|^[a-fA-F0-9]{40}$|^[a-fA-F0-9]{64}$/;
-
-                const ips = lines.filter(l => ipRegex.test(l));
-                const hashes = lines.filter(l => hashRegex.test(l));
-                const domains = lines.filter(l => !ipRegex.test(l) && !hashRegex.test(l));
-
-                if (ips.length === 0 && hashes.length === 0 && domains.length === 0) {
-                    setStatus('No valid IOCs detected.', true);
-                    return;
-                }
-
-                state.isScanning = true;
-                const progress = $('quickProgress');
-                progress.classList.remove('hidden');
-                const dot = progress.querySelector('.dot');
-                dot.className = 'dot busy';
-                progress.innerHTML = `<span class="dot busy"></span> Scanning ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains…`;
-
-                setStatus(`Quick scan: ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains`);
-
-                // Store original textarea values to restore after
-                const origIP = $('ipTextArea').value;
-                const origHash = $('hashInput').value;
-                const origDomain = $('domainInput').value;
-
-                try {
-                    // 1. Scan IPs
-                    if (ips.length) {
-                        $('ipTextArea').value = ips.join('\n');
-                        // Trigger IP scan and wait for it to finish
-                        await new Promise((resolve) => {
-                            const btn = $('scanIPsBtn');
-                            const statusEl = $('ipScanStatus');
-                            const origStatus = statusEl.textContent;
-                            btn.click();
-                            const checkDone = setInterval(() => {
-                                const txt = statusEl.textContent;
-                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
-                                    clearInterval(checkDone);
-                                    resolve();
-                                }
-                            }, 400);
-                            // safety timeout after 30s
-                            setTimeout(() => { clearInterval(checkDone);
-                                resolve(); }, 30000);
-                        });
-                        await sleep(500);
-                    }
-
-                    // 2. Scan Hashes
-                    if (hashes.length) {
-                        $('hashInput').value = hashes.join('\n');
-                        await new Promise((resolve) => {
-                            const btn = $('scanHashesBtn');
-                            const statusEl = $('hashScanStatus');
-                            btn.click();
-                            const checkDone = setInterval(() => {
-                                const txt = statusEl.textContent;
-                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
-                                    clearInterval(checkDone);
-                                    resolve();
-                                }
-                            }, 400);
-                            setTimeout(() => { clearInterval(checkDone);
-                                resolve(); }, 30000);
-                        });
-                        await sleep(500);
-                    }
-
-                    // 3. Scan Domains
-                    if (domains.length) {
-                        $('domainInput').value = domains.join('\n');
-                        await new Promise((resolve) => {
-                            const btn = $('scanDomainsBtn');
-                            const statusEl = $('domainScanStatus');
-                            btn.click();
-                            const checkDone = setInterval(() => {
-                                const txt = statusEl.textContent;
-                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
-                                    clearInterval(checkDone);
-                                    resolve();
-                                }
-                            }, 400);
-                            setTimeout(() => { clearInterval(checkDone);
-                                resolve(); }, 30000);
-                        });
-                    }
-
-                    progress.innerHTML = `<span class="dot done"></span> ✅ Complete — ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains scanned`;
-                    setStatus('Quick scan complete.');
-
-                } catch (err) {
-                    progress.innerHTML = `<span class="dot error"></span> ⚠ Error: ${err.message}`;
-                    setStatus('Quick scan error: ' + err.message, true);
-                } finally {
-                    state.isScanning = false;
-                    // Restore original textareas (optional)
-                    // $('ipTextArea').value = origIP;
-                    // $('hashInput').value = origHash;
-                    // $('domainInput').value = origDomain;
-                    // keep the populated values so user can see what was scanned
-                }
-            });
-
-            $('quickClearBtn').addEventListener('click', () => {
-                $('quickInput').value = '';
-                $('quickProgress').classList.add('hidden');
-            });
-
             /* ─── Worker Test ─── */
             async function testWorker() {
                 const base = proxyBaseInput.value.trim();
@@ -1785,6 +1663,124 @@
             $('dashboardTestWorker').addEventListener('click', testWorker);
             $('settingsTestWorker').addEventListener('click', testWorker);
             setTimeout(testWorker, 600);
+
+            /* ─── Quick Scan — handles ALL types ─── */
+            $('quickScanBtn').addEventListener('click', async () => {
+                if (state.isScanning) {
+                    setStatus('Already scanning, please wait…', true);
+                    return;
+                }
+                const raw = $('quickInput').value.trim();
+                if (!raw) { setStatus('Enter something to scan', true); return; }
+                const lines = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                const ipRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+                const hashRegex = /^[a-fA-F0-9]{32}$|^[a-fA-F0-9]{40}$|^[a-fA-F0-9]{64}$/;
+
+                const ips = lines.filter(l => ipRegex.test(l));
+                const hashes = lines.filter(l => hashRegex.test(l));
+                const domains = lines.filter(l => !ipRegex.test(l) && !hashRegex.test(l));
+
+                if (ips.length === 0 && hashes.length === 0 && domains.length === 0) {
+                    setStatus('No valid IOCs detected.', true);
+                    return;
+                }
+
+                state.isScanning = true;
+                const progress = $('quickProgress');
+                progress.classList.remove('hidden');
+                const dot = progress.querySelector('.dot');
+                dot.className = 'dot busy';
+                progress.innerHTML =
+                    `<span class="dot busy"></span> Scanning ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains…`;
+
+                setStatus(`Quick scan: ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains`);
+
+                // Store original textarea values to restore after
+                const origIP = $('ipTextArea').value;
+                const origHash = $('hashInput').value;
+                const origDomain = $('domainInput').value;
+
+                try {
+                    // 1. Scan IPs
+                    if (ips.length) {
+                        $('ipTextArea').value = ips.join('\n');
+                        // Temporarily allow scan by toggling flag
+                        state.isScanning = false;
+                        $('scanIPsBtn').click();
+                        state.isScanning = true;
+                        // Wait for IP scan to complete by checking status
+                        await new Promise((resolve) => {
+                            const statusEl = $('ipScanStatus');
+                            const checkDone = setInterval(() => {
+                                const txt = statusEl.textContent;
+                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
+                                    clearInterval(checkDone);
+                                    resolve();
+                                }
+                            }, 400);
+                            setTimeout(() => { clearInterval(checkDone);
+                                resolve(); }, 30000);
+                        });
+                        await sleep(500);
+                    }
+
+                    // 2. Scan Hashes
+                    if (hashes.length) {
+                        $('hashInput').value = hashes.join('\n');
+                        state.isScanning = false;
+                        $('scanHashesBtn').click();
+                        state.isScanning = true;
+                        await new Promise((resolve) => {
+                            const statusEl = $('hashScanStatus');
+                            const checkDone = setInterval(() => {
+                                const txt = statusEl.textContent;
+                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
+                                    clearInterval(checkDone);
+                                    resolve();
+                                }
+                            }, 400);
+                            setTimeout(() => { clearInterval(checkDone);
+                                resolve(); }, 30000);
+                        });
+                        await sleep(500);
+                    }
+
+                    // 3. Scan Domains
+                    if (domains.length) {
+                        $('domainInput').value = domains.join('\n');
+                        state.isScanning = false;
+                        $('scanDomainsBtn').click();
+                        state.isScanning = true;
+                        await new Promise((resolve) => {
+                            const statusEl = $('domainScanStatus');
+                            const checkDone = setInterval(() => {
+                                const txt = statusEl.textContent;
+                                if (txt.includes('✅') || txt.includes('Ready') || txt.includes('Error')) {
+                                    clearInterval(checkDone);
+                                    resolve();
+                                }
+                            }, 400);
+                            setTimeout(() => { clearInterval(checkDone);
+                                resolve(); }, 30000);
+                        });
+                    }
+
+                    progress.innerHTML =
+                        `<span class="dot done"></span> ✅ Complete — ${ips.length} IPs, ${hashes.length} hashes, ${domains.length} domains scanned`;
+                    setStatus('Quick scan complete.');
+
+                } catch (err) {
+                    progress.innerHTML = `<span class="dot error"></span> ⚠ Error: ${err.message}`;
+                    setStatus('Quick scan error: ' + err.message, true);
+                } finally {
+                    state.isScanning = false;
+                }
+            });
+
+            $('quickClearBtn').addEventListener('click', () => {
+                $('quickInput').value = '';
+                $('quickProgress').classList.add('hidden');
+            });
 
             /* ─── IP Scanner — simplified "old style" results ─── */
             const ipText = $('ipTextArea');
@@ -1943,7 +1939,17 @@
             };
 
             $('scanIPsBtn').addEventListener('click', async () => {
-                if (state.isScanning) { setStatus('Already scanning…', true); return; }
+                // Skip if already scanning from quick scan
+                if (state.isScanning) {
+                    // If called from quick scan, we allow it by temporarily setting flag false
+                    // but if called from UI and already scanning, block
+                    if (state._quickScanActive) {
+                        // allow
+                    } else {
+                        setStatus('Already scanning…', true);
+                        return;
+                    }
+                }
                 const raw = ipText.value.trim();
                 if (!raw) { setStatus('Enter at least one IP', true); return; }
                 const ips = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
@@ -1954,6 +1960,7 @@
                 ipResultsContainer.innerHTML =
                     '<div style="padding:16px;text-align:center;"><span class="spinner"></span> Scanning...</div>';
                 setStatus(`Scanning ${ips.length} IPs...`);
+                const prevScanning = state.isScanning;
                 state.isScanning = true;
                 let totalScanned = 0,
                     malCount = 0,
@@ -2006,7 +2013,7 @@
                 setStatus(`IP scan complete: ${totalScanned} IPs`);
                 $('ipScanStatus').textContent = `✅ ${totalScanned} IPs`;
                 filterIP(ipFilterMode);
-                state.isScanning = false;
+                state.isScanning = prevScanning || false;
             });
 
             $('clearIPsBtn').addEventListener('click', () => {
@@ -2073,7 +2080,15 @@
             });
 
             $('scanHashesBtn').addEventListener('click', async () => {
-                if (state.isScanning) { setStatus('Already scanning…', true); return; }
+                if (state.isScanning) {
+                    // Allow if called from quick scan context
+                    if (window._quickScanActive) {
+                        // proceed
+                    } else {
+                        setStatus('Already scanning…', true);
+                        return;
+                    }
+                }
                 state.proxyBase = proxyBaseInput.value.trim();
                 const raw = hashInput.value || '';
                 const found = raw.match(hashRegex) || [];
@@ -2087,6 +2102,7 @@
                 let malCount = 0,
                     safeCount = 0,
                     totalScanned = 0;
+                const prevScanning = state.isScanning;
                 state.isScanning = true;
 
                 for (const h of hashes) {
@@ -2218,7 +2234,7 @@
                 addHistory({ type: 'Hash Scan', label: `Scanned ${totalScanned} hashes (${malCount} malicious)` });
                 setStatus(`Hash scan complete: ${totalScanned} hashes`);
                 $('hashScanStatus').textContent = `✅ ${totalScanned} hashes`;
-                state.isScanning = false;
+                state.isScanning = prevScanning || false;
             });
 
             /* ─── Domain / URL Scanner ─── */
@@ -2317,7 +2333,14 @@
             }
 
             $('scanDomainsBtn').addEventListener('click', () => {
-                if (state.isScanning) { setStatus('Already scanning…', true); return; }
+                if (state.isScanning) {
+                    if (window._quickScanActive) {
+                        // allow
+                    } else {
+                        setStatus('Already scanning…', true);
+                        return;
+                    }
+                }
                 const txt = domainInput.value.trim();
                 if (!txt) { setStatus('Enter at least one domain or URL', true); return; }
                 const lines = txt.split(/\r?\n/).map(d => d.trim()).filter(Boolean);
@@ -2330,6 +2353,7 @@
                 let totalScanned = 0,
                     malCount = 0,
                     susCount = 0;
+                const prevScanning = state.isScanning;
                 state.isScanning = true;
 
                 (async () => {
@@ -2352,7 +2376,7 @@
                         label: `Scanned ${totalScanned} items (${malCount} malicious)` });
                     setStatus(`Domain/URL scan complete: ${totalScanned} items`);
                     $('domainScanStatus').textContent = `✅ ${totalScanned} items`;
-                    state.isScanning = false;
+                    state.isScanning = prevScanning || false;
                 })();
             });
 
@@ -2558,6 +2582,19 @@
                 $('workerUrlDisplay').textContent = state.proxyBase;
             });
             $('workerUrlDisplay').textContent = state.proxyBase;
+
+            // Flag to allow quick scan to bypass isScanning check
+            window._quickScanActive = false;
+
+            // Patch quick scan to set the flag
+            const origQuickScan = $('quickScanBtn').click;
+            $('quickScanBtn').addEventListener('click', function(e) {
+                // The handler above already handles everything
+            }, true);
+
+            // Override the quick scan handler to set _quickScanActive
+            const quickBtn = $('quickScanBtn');
+            const origHandler = quickBtn._listeners ? quickBtn._listeners : null;
 
         })();
     </script>
